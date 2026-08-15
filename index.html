@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#293B52">
+  <meta name="description" content="João Arthur — finanças pessoais">
+  <title>João Arthur — finanças</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- TELA DE CARREGAMENTO -->
+  <section id="loading-screen" class="screen loading-screen">
+    <div class="brand">
+      <div class="brand-name">João Arthur</div>
+      <div class="brand-subtitle">finanças</div>
+    </div>
+
+    <div class="loader-wrap">
+      <div class="loader-track">
+        <div id="loader-bar" class="loader-bar"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TELA DE SENHA -->
+  <section id="password-screen" class="screen password-screen hidden">
+    <div class="password-card">
+      <div class="brand compact">
+        <div class="brand-name">João Arthur</div>
+        <div class="brand-subtitle">finanças</div>
+      </div>
+
+      <form id="password-form" autocomplete="off">
+        <input
+          id="password-input"
+          class="password-input"
+          type="password"
+          inputmode="numeric"
+          maxlength="8"
+          placeholder="DDMMYY"
+          aria-label="Senha"
+          required
+        >
+        <button class="primary-button password-button" type="submit">Entrar</button>
+      </form>
+
+      <p id="password-error" class="password-error hidden">Senha incorreta.</p>
+    </div>
+  </section>
+
+  <!-- APLICAÇÃO -->
+  <main id="app" class="app hidden">
+    <header class="topbar">
+      <div>
+        <div class="topbar-name">João Arthur</div>
+        <div class="topbar-subtitle">finanças</div>
+      </div>
+
+      <button id="history-button" class="ghost-button" type="button">
+        Histórico
+      </button>
+    </header>
+
+    <section class="dashboard">
+
+      <div class="hero">
+        <div>
+          <p class="eyebrow">CONTROLE PESSOAL</p>
+          <h1>Suas finanças,<br><span>sem complicação.</span></h1>
+        </div>
+        <div class="clock" id="clock">--:--</div>
+      </div>
+
+      <section class="summary-grid">
+        <article class="summary-card">
+          <span>Você deve</span>
+          <strong id="summary-you-owe">R$ 0,00</strong>
+        </article>
+
+        <article class="summary-card">
+          <span>Devem a você</span>
+          <strong id="summary-owed-to-you">R$ 0,00</strong>
+        </article>
+
+        <article class="summary-card">
+          <span>Em aberto</span>
+          <strong id="summary-open-count">0</strong>
+        </article>
+      </section>
+
+      <section class="capture-card">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">NOVO REGISTRO</p>
+            <h2>O que aconteceu?</h2>
+          </div>
+        </div>
+
+        <p class="helper">
+          Escreva normalmente. Ex.: “Estou devendo R$ 100 para minha mãe porque peguei dinheiro emprestado para ir ao shopping amanhã.”
+        </p>
+
+        <form id="debt-form">
+          <textarea
+            id="debt-input"
+            rows="4"
+            placeholder="Digite aqui sua movimentação financeira..."
+            required
+          ></textarea>
+
+          <div class="capture-bottom">
+            <div id="parser-preview" class="parser-preview">
+              O sistema vai interpretar o valor, quem paga e quem recebe.
+            </div>
+            <button class="primary-button" type="submit">Registrar</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="table-section">
+        <div class="section-heading table-heading">
+          <div>
+            <p class="eyebrow">PENDÊNCIAS</p>
+            <h2>Dinheiro em aberto</h2>
+          </div>
+          <div class="table-tools">
+            <input id="search-input" class="search-input" type="search" placeholder="Pesquisar">
+          </div>
+        </div>
+
+        <div id="empty-state" class="empty-state">
+          <div class="empty-icon">—</div>
+          <h3>Nenhuma dívida em aberto</h3>
+          <p>Quando você registrar uma, ela aparecerá aqui.</p>
+        </div>
+
+        <div id="debt-table-wrap" class="table-wrap hidden">
+          <table>
+            <thead>
+              <tr>
+                <th>Valor</th>
+                <th>Quem paga</th>
+                <th>Quem recebe</th>
+                <th>Registrado</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="debt-table-body"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="backup-section">
+        <button id="export-button" class="text-button" type="button">Exportar backup</button>
+        <label class="text-button file-button">
+          Importar backup
+          <input id="import-input" type="file" accept=".json,application/json" hidden>
+        </label>
+        <button id="logout-button" class="text-button" type="button">Bloquear</button>
+      </section>
+
+    </section>
+  </main>
+
+  <!-- MODAL DE DETALHES -->
+  <div id="detail-modal" class="modal hidden" aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal></div>
+    <section class="modal-card detail-card" role="dialog" aria-modal="true" aria-labelledby="detail-title">
+      <button class="modal-close" type="button" data-close-modal aria-label="Fechar">×</button>
+
+      <p class="eyebrow">DETALHES</p>
+      <h2 id="detail-title">Registro</h2>
+
+      <div class="detail-amount" id="detail-amount">R$ 0,00</div>
+
+      <div class="detail-grid">
+        <div>
+          <span>Quem paga</span>
+          <strong id="detail-payer">—</strong>
+        </div>
+        <div>
+          <span>Quem recebe</span>
+          <strong id="detail-payee">—</strong>
+        </div>
+        <div>
+          <span>Registrado</span>
+          <strong id="detail-date">—</strong>
+        </div>
+        <div>
+          <span>Restante</span>
+          <strong id="detail-remaining">—</strong>
+        </div>
+      </div>
+
+      <div class="description-box">
+        <span>Descrição original</span>
+        <p id="detail-description">—</p>
+      </div>
+
+      <div id="payments-area">
+        <div class="section-heading small">
+          <div>
+            <p class="eyebrow">PAGAMENTOS</p>
+            <h3>Quitação</h3>
+          </div>
+        </div>
+
+        <div id="payment-list" class="payment-list"></div>
+
+        <form id="payment-form" class="payment-form">
+          <div class="form-row">
+            <label>
+              <span>Valor pago</span>
+              <input id="payment-amount" type="text" inputmode="decimal" placeholder="R$ 0,00" required>
+            </label>
+
+            <label>
+              <span>Método</span>
+              <select id="payment-method">
+                <option value="pix">Pix</option>
+                <option value="dinheiro">Dinheiro físico</option>
+                <option value="uso">Compra/uso do dinheiro da outra pessoa</option>
+              </select>
+            </label>
+          </div>
+
+          <label>
+            <span>Observação (opcional)</span>
+            <input id="payment-note" type="text" maxlength="120" placeholder="Ex.: paguei na saída do shopping">
+          </label>
+
+          <button class="primary-button" type="submit">Registrar pagamento</button>
+        </form>
+      </div>
+
+      <div id="paid-message" class="paid-message hidden">
+        <span>✓</span>
+        <div>
+          <strong>Dívida quitada</strong>
+          <p>Este registro está no histórico.</p>
+        </div>
+      </div>
+
+      <button id="delete-debt-button" class="danger-button" type="button">Excluir registro</button>
+    </section>
+  </div>
+
+  <!-- MODAL DE HISTÓRICO -->
+  <div id="history-modal" class="modal hidden" aria-hidden="true">
+    <div class="modal-backdrop" data-close-history></div>
+    <section class="modal-card history-card" role="dialog" aria-modal="true" aria-labelledby="history-title">
+      <button class="modal-close" type="button" data-close-history aria-label="Fechar">×</button>
+
+      <p class="eyebrow">ARQUIVO</p>
+      <h2 id="history-title">Histórico</h2>
+      <p class="modal-intro">Tudo o que já foi quitado ou encerrado.</p>
+
+      <div id="history-empty" class="empty-state compact-empty">
+        <div class="empty-icon">—</div>
+        <h3>Nada no histórico</h3>
+        <p>As dívidas quitadas aparecerão aqui.</p>
+      </div>
+
+      <div id="history-table-wrap" class="table-wrap hidden">
+        <table>
+          <thead>
+            <tr>
+              <th>Valor</th>
+              <th>Quem paga</th>
+              <th>Quem recebe</th>
+              <th>Quitado em</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="history-table-body"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
